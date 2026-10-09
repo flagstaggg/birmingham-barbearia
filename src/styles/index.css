@@ -1,0 +1,213 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+ * DESIGN SYSTEM — troque as cores AQUI (e a fonte, se quiser)
+ * ========================================================================== */
+:root {
+  /* Fundo principal */
+  --bg: #0d0d0d;
+  /* Cards e seções alternadas */
+  --surface: #1a1a1a;
+  /* Dourado envelhecido — usado com parcimônia */
+  --accent: #c9a961;
+  /* Texto principal (creme) */
+  --text: #f5f1e8;
+  /* Texto secundário: creme a 65% */
+  --text-muted: rgba(245, 241, 232, 0.65);
+  /* Linhas e divisores: dourado a 25% */
+  --line: rgba(201, 169, 97, 0.25);
+  /* Dourado mais discreto, para brilhos e realces */
+  --accent-soft: rgba(201, 169, 97, 0.12);
+
+  /* Header fixo */
+  --header-height: 84px;
+
+  /* Curvas de movimento */
+  --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+
+  html {
+    /* Ancoragem com compensação do header fixo */
+    scroll-padding-top: var(--header-height);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Enquanto o Lenis estiver ativo, o scroll suave fica por conta dele. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    @apply bg-bg text-text font-sans font-light antialiased;
+    /* Evita qualquer rolagem horizontal em qualquer largura */
+    overflow-x: hidden;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-light;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Foco visível e consistente (acessibilidade por teclado) */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* Seleção discreta na paleta do site */
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* Barra de rolagem discreta */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface);
+    border: 2px solid var(--bg);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+}
+
+@layer components {
+  /* Container padrão — respiro lateral consistente em todas as seções */
+  .container-lux {
+    @apply mx-auto w-full max-w-content px-6 sm:px-10 lg:px-16;
+  }
+
+  /* Espaçamento vertical generoso (mínimo 96px no desktop) */
+  .section-y {
+    @apply py-24 sm:py-28 lg:py-36;
+  }
+
+  /* Rótulo pequeno em caixa alta (seções, menu, labels) */
+  .eyebrow {
+    @apply font-sans text-[11px] font-normal uppercase tracking-widest text-accent;
+  }
+
+  /* Título de seção */
+  .section-title {
+    @apply mt-5 font-display text-4xl font-light text-text sm:text-5xl lg:text-6xl;
+  }
+
+  /* Parágrafo introdutório de seção */
+  .section-intro {
+    @apply mt-6 max-w-2xl text-base font-light text-muted;
+  }
+
+  /* Linha divisória dourada */
+  .rule {
+    @apply block h-px w-full bg-line;
+  }
+
+  /* Overlay escuro padrão sobre fotos */
+  .img-overlay::after {
+    content: '';
+    @apply pointer-events-none absolute inset-0;
+    background: linear-gradient(
+      to top,
+      rgba(13, 13, 13, 0.85) 0%,
+      rgba(13, 13, 13, 0.25) 55%,
+      rgba(13, 13, 13, 0.35) 100%
+    );
+  }
+
+  /* Tratamento consistente das fotos: menos saturação, mais contraste.
+     Garante que as imagens mantenham o tom da paleta do site. */
+  .img-lux {
+    filter: saturate(0.8) contrast(1.06) brightness(0.92);
+  }
+
+  /* Mapa do Google em tema escuro */
+  .map-dark {
+    filter: grayscale(1) invert(0.92) contrast(0.86) brightness(0.94);
+  }
+
+  /* Swiper — pequenos ajustes nos controles */
+  .swiper-pagination-bullet {
+    background: var(--text);
+    opacity: 0.25;
+  }
+  .swiper-pagination-bullet-active {
+    background: var(--accent);
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  /* Animação do indicador de scroll do Hero */
+  @keyframes scroll-hint {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+      opacity: 0;
+    }
+    40% {
+      transform: scaleY(1);
+      transform-origin: top;
+      opacity: 1;
+    }
+    60% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+      opacity: 0;
+    }
+  }
+  .animate-scroll-hint {
+    animation: scroll-hint 2.4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+  }
+}
+
+/* Respecta a preferência do sistema por menos movimento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
